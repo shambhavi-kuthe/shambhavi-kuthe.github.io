@@ -22,6 +22,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -61,6 +95,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 <link rel="stylesheet" href="../../styles.css">
@@ -143,8 +180,262 @@ ul.task-list li input[type="checkbox"] {
 
 
 
+<section id="unraveling-customer-segmentation-with-k-means-clustering" class="level1">
+<h1>Unraveling Customer Segmentation with K-Means Clustering</h1>
+<p>Clustering, a process that involves grouping related data points together, is one of the fundamental jobs in the large area of machine learning. Clustering is important in a variety of applications, from customer segmentation to image analysis. The K-Means algorithm, recognized for its simplicity and efficacy, is a strong clustering technique.</p>
+<p><strong>Understanding Clustering</strong></p>
+<p>Clustering is a fundamental machine learning approach that involves grouping together comparable data points based on underlying patterns or similarities in the data. Clustering is classified as unsupervised learning since it acts on unlabeled datasets, as opposed to supervised learning, where the algorithm is taught on labeled data. Clustering’s primary purpose is to find and arrange data points into discrete clusters, with each cluster comprising components with similar properties. This approach aids in the discovery of hidden structures inside data, making it a useful tool for tasks such as customer segmentation, anomaly detection, and pattern identification. K-Means is a popular clustering technique that divides data into K-groups and assigns each data point to the cluster with the closest centroid. Clustering algorithms play an important role in exploratory data analysis, helping to extract useful insights from vast and complicated datasets.</p>
+<p><strong>K-means Clustering</strong></p>
+<p>K-Means clustering is a well-known unsupervised machine learning approach for partitioning a dataset into K separate, non-overlapping subsets or clusters. Iteratively, the method assigns each data point to the cluster with the closest centroid (mean point), then updates the centroids depending on the newly allocated points. The number of clusters, K, is a user-specified parameter. K-Means is especially successful in situations where the data shows clear patterns of separation, and its simplicity and effectiveness make it popular for applications like customer segmentation, picture reduction, and anomaly identification. The algorithm’s success is due to its ability to rapidly converge on a solution, which makes it computationally efficient for huge datasets. It is, however, sensitive to the initial placement of centroids, and the value of K can have a substantial influence on the quality of the clustering results.</p>
+<section id="the-code-breakdown" class="level2">
+<h2 class="anchored" data-anchor-id="the-code-breakdown">The Code Breakdown</h2>
+<p>Let’s look at the Python code that shows how to use K-Means clustering on customer data. The dataset utilized in this case is from a shopping mall, and the goal is to classify clients based on their yearly income and age.</p>
+<p><strong>Dataset:</strong></p>
+<p>The dataset was obtained from Kaggle : <a href="https://www.kaggle.com/nelakurthisudheer/mall-customer-segmentation" class="uri">https://www.kaggle.com/nelakurthisudheer/mall-customer-segmentation</a></p>
+<p>The dataset contains the following five characteristics of 200 customers :</p>
+<ul>
+<li><p>CustomerID: A unique identifier issued to the customer.</p></li>
+<li><p>Gender: The customer’s gender</p></li>
+<li><p>Age: The customer’s age.</p></li>
+<li><p>Annual Income (k$): The customer’s annual income. The mall assigns a spending score (1-100) based on client behavior and spending habits.</p></li>
+</ul>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importing libraries and reading the data</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mpl_toolkits.mplot3d <span class="im">import</span> Axes3D</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> KMeans</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">"ignore"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading the dataset</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>customers <span class="op">=</span> pd.read_csv(<span class="st">'data\Mall_Customers.csv'</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(customers.head()) </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Checking the summary statistics</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>customers.describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   CustomerID   Genre  Age  Annual Income (k$)  Spending Score (1-100)
+0           1    Male   19                  15                      39
+1           2    Male   21                  15                      81
+2           3  Female   20                  16                       6
+3           4  Female   23                  16                      77
+4           5  Female   31                  17                      40</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div>
 
 
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">CustomerID</th>
+<th data-quarto-table-cell-role="th">Age</th>
+<th data-quarto-table-cell-role="th">Annual Income (k$)</th>
+<th data-quarto-table-cell-role="th">Spending Score (1-100)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">count</td>
+<td>200.000000</td>
+<td>200.000000</td>
+<td>200.000000</td>
+<td>200.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">mean</td>
+<td>100.500000</td>
+<td>38.850000</td>
+<td>60.560000</td>
+<td>50.200000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">std</td>
+<td>57.879185</td>
+<td>13.969007</td>
+<td>26.264721</td>
+<td>25.823522</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">min</td>
+<td>1.000000</td>
+<td>18.000000</td>
+<td>15.000000</td>
+<td>1.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">25%</td>
+<td>50.750000</td>
+<td>28.750000</td>
+<td>41.500000</td>
+<td>34.750000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">50%</td>
+<td>100.500000</td>
+<td>36.000000</td>
+<td>61.500000</td>
+<td>50.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">75%</td>
+<td>150.250000</td>
+<td>49.000000</td>
+<td>78.000000</td>
+<td>73.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">max</td>
+<td>200.000000</td>
+<td>70.000000</td>
+<td>137.000000</td>
+<td>99.000000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizing data distributions</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>sns.distplot(customers[<span class="st">'Annual Income (k$)'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>&lt;Axes: xlabel='Annual Income (k$)', ylabel='Density'&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-3-output-2.png" width="606" height="429"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizing data distributions</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sns.distplot(customers[<span class="st">'Age'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>&lt;Axes: xlabel='Age', ylabel='Density'&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-4-output-2.png" width="606" height="429"></p>
+</div>
+</div>
+<p>Importing the appropriate libraries, loading the dataset, and studying its fundamental statistics and feature distributions are the first stages.</p>
+<section id="clustering-based-on-annual-income" class="level3">
+<h3 class="anchored" data-anchor-id="clustering-based-on-annual-income">Clustering Based on Annual Income</h3>
+<p>The elbow method is used to estimate the optimal number of clusters in the first clustering job, which is dependent on yearly income.</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> customers.iloc[:,[<span class="dv">3</span>,<span class="dv">4</span>]].values</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>sos <span class="op">=</span> []<span class="co">#within cluster sum of squares</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Applying K-Means with different cluster numbers</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">11</span>):</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    kmeans<span class="op">=</span>KMeans(n_clusters<span class="op">=</span>i, init<span class="op">=</span><span class="st">'k-means++'</span>, random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    kmeans.fit(data)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    sos.append(kmeans.inertia_)<span class="co"># inertia_ = to find the sos value</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting the Elbow Method</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>plt.plot(<span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">11</span>), sos)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'The Elbow Method'</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Number of Clusters'</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'SOS'</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-5-output-1.png" width="618" height="449"></p>
+</div>
+</div>
+<p>The Elbow Method assists in determining the optimal number of clusters by noting when the within-cluster sum of squares (SOS) begins to plateau. The ‘elbow’ appears at k=5, suggesting that there are five unique clusters in this example.</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Applying K-Means with k=5</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>kmeans<span class="op">=</span>KMeans(n_clusters<span class="op">=</span><span class="dv">5</span>, init<span class="op">=</span><span class="st">'k-means++'</span>, random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>y_kmeans<span class="op">=</span>kmeans.fit_predict(data)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#plotting the clusters</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>fig,ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">4</span>))</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Scatter plot for each cluster</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>ax.scatter(data[y_kmeans<span class="op">==</span><span class="dv">0</span>,<span class="dv">0</span>],data[y_kmeans<span class="op">==</span><span class="dv">0</span>,<span class="dv">1</span>],s<span class="op">=</span><span class="dv">100</span>,c<span class="op">=</span><span class="st">'magenta'</span>,label<span class="op">=</span><span class="st">'Cluster 1'</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>ax.scatter(data[y_kmeans<span class="op">==</span><span class="dv">1</span>,<span class="dv">0</span>],data[y_kmeans<span class="op">==</span><span class="dv">1</span>,<span class="dv">1</span>],s<span class="op">=</span><span class="dv">100</span>, c<span class="op">=</span><span class="st">'cyan'</span>, label<span class="op">=</span><span class="st">'Cluster 2'</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>ax.scatter(data[y_kmeans<span class="op">==</span><span class="dv">2</span>,<span class="dv">0</span>],data[y_kmeans<span class="op">==</span><span class="dv">2</span>,<span class="dv">1</span>],s<span class="op">=</span><span class="dv">100</span>, c<span class="op">=</span><span class="st">'red'</span>, label<span class="op">=</span><span class="st">'Cluster 3'</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>ax.scatter(data[y_kmeans<span class="op">==</span><span class="dv">3</span>,<span class="dv">0</span>],data[y_kmeans<span class="op">==</span><span class="dv">3</span>,<span class="dv">1</span>],s<span class="op">=</span><span class="dv">100</span>, c<span class="op">=</span><span class="st">'blue'</span>, label<span class="op">=</span><span class="st">'Cluster 4'</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>ax.scatter(data[y_kmeans<span class="op">==</span><span class="dv">4</span>,<span class="dv">0</span>],data[y_kmeans<span class="op">==</span><span class="dv">4</span>,<span class="dv">1</span>],s<span class="op">=</span><span class="dv">100</span>, c<span class="op">=</span><span class="st">'green'</span>, label<span class="op">=</span><span class="st">'Cluster 5'</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting centroids</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>ax.scatter(kmeans.cluster_centers_[:,<span class="dv">0</span>],kmeans.cluster_centers_[:,<span class="dv">1</span>], s<span class="op">=</span><span class="dv">200</span>,c<span class="op">=</span><span class="st">'yellow'</span>,label<span class="op">=</span><span class="st">'Centroid'</span>)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Cluster Segmentation of Customer'</span>)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Annual Income (k$)'</span>)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Spending Score(1 - 100)'</span>)</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-6-output-1.png" width="667" height="376"></p>
+</div>
+</div>
+<p>The above code segment depicts the clusters and centroids found based on yearly income and spending score.</p>
+</section>
+<section id="clustering-based-on-age" class="level3">
+<h3 class="anchored" data-anchor-id="clustering-based-on-age">Clustering Based on Age</h3>
+<p>The same process is repeated for clustering based on age.</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extracting relevant data</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>data<span class="op">=</span>customers.iloc[:,[<span class="dv">2</span>,<span class="dv">4</span>]].values</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Elbow method for determining optimal clusters</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>sos <span class="op">=</span> []</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">11</span>):</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    kmeans<span class="op">=</span>KMeans(n_clusters<span class="op">=</span>i, init<span class="op">=</span><span class="st">'k-means++'</span>, random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    kmeans.fit(data)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    sos.append(kmeans.inertia_)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting the Elbow Method</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>plt.plot(<span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">11</span>), sos)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'The Elbow Method'</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Number of Clusters'</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'SOS'</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-7-output-1.png" width="618" height="449"></p>
+</div>
+</div>
+<p>The Elbow Method is used once more to determine the ideal number of clusters. In this example, the code suggests that k=4 is a good choice.</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Applying K-Means with k=4</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>kmeans<span class="op">=</span>KMeans(n_clusters<span class="op">=</span><span class="dv">5</span>, init<span class="op">=</span><span class="st">'k-means++'</span>, random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>y_kmeans<span class="op">=</span>kmeans.fit_predict(data)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting the clusters</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>fig,ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">4</span>))</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Scatter plot for each cluster</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>ax.scatter(data[y_kmeans<span class="op">==</span><span class="dv">0</span>,<span class="dv">0</span>],data[y_kmeans<span class="op">==</span><span class="dv">0</span>,<span class="dv">1</span>],s<span class="op">=</span><span class="dv">100</span>,c<span class="op">=</span><span class="st">'magenta'</span>,label<span class="op">=</span><span class="st">'Cluster 1'</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>ax.scatter(data[y_kmeans<span class="op">==</span><span class="dv">1</span>,<span class="dv">0</span>],data[y_kmeans<span class="op">==</span><span class="dv">1</span>,<span class="dv">1</span>],s<span class="op">=</span><span class="dv">100</span>, c<span class="op">=</span><span class="st">'cyan'</span>, label<span class="op">=</span><span class="st">'Cluster 2'</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>ax.scatter(data[y_kmeans<span class="op">==</span><span class="dv">2</span>,<span class="dv">0</span>],data[y_kmeans<span class="op">==</span><span class="dv">2</span>,<span class="dv">1</span>],s<span class="op">=</span><span class="dv">100</span>, c<span class="op">=</span><span class="st">'red'</span>, label<span class="op">=</span><span class="st">'Cluster 3'</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>ax.scatter(data[y_kmeans<span class="op">==</span><span class="dv">3</span>,<span class="dv">0</span>],data[y_kmeans<span class="op">==</span><span class="dv">3</span>,<span class="dv">1</span>],s<span class="op">=</span><span class="dv">100</span>, c<span class="op">=</span><span class="st">'blue'</span>, label<span class="op">=</span><span class="st">'Cluster 4'</span>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting centroids</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>ax.scatter(kmeans.cluster_centers_[:,<span class="dv">0</span>],kmeans.cluster_centers_[:,<span class="dv">1</span>], s<span class="op">=</span><span class="dv">200</span>,c<span class="op">=</span><span class="st">'yellow'</span>,label<span class="op">=</span><span class="st">'Centroid'</span>)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Cluster Segmentation of Customer'</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Age'</span>)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Spending Score(1 - 100)'</span>)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-8-output-1.png" width="667" height="376"></p>
+</div>
+</div>
+<p>Age and expenditure score are used to depict clusters and centroids.</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>In this blog article, we looked at clustering, a strong unsupervised learning approach. We applied clustering to customer data using the K-Means technique, revealing separate groupings based on yearly income and age. The elbow approach was critical in finding the ideal amount of clusters, and the visualizations that resulted offered insights into consumer segmentation. Understanding and utilizing clustering techniques such as K-Means may have far-reaching consequences in a variety of fields, providing useful insights and paving the way for better informed decision-making.</p>
+
+
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
