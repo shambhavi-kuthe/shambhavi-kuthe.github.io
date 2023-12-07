@@ -1,16 +1,16 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "ML_Blog",
-    "section": "",
-    "text": "No matching items"
-  },
-  {
     "objectID": "about.html#course-cs-5805-machine-learning",
     "href": "about.html#course-cs-5805-machine-learning",
     "title": "About",
     "section": "Course: CS 5805 Machine Learning",
     "text": "Course: CS 5805 Machine Learning\nThis is a five series blog on the following Machine Learning topics for the course CS 5805 at Virginia tech.\nTopics:\n\nProbability theory and random variables\nClustering\nLinear and nonlinear regression\nClassification\nAnomaly/outlier detection"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Machine Learning Blog",
+    "section": "",
+    "text": "Blog 1: Probability theory and random variables\n\n\n\n\n\n\n\n\n\n\n\n\nDec 1, 2023\n\n\nShambhavi Kuthe\n\n\n\n\n\n\n  \n\n\n\n\nBlog 2: Clustering\n\n\n\n\n\n\n\n\n\n\n\n\nDec 1, 2023\n\n\nShambhavi Kuthe\n\n\n\n\n\n\n  \n\n\n\n\nBlog 3: Linear and Non-linear Regression\n\n\n\n\n\n\n\n\n\n\n\n\nDec 1, 2023\n\n\nShambhavi Kuthe\n\n\n\n\n\n\n  \n\n\n\n\nBlog 4: Classification\n\n\n\n\n\n\n\n\n\n\n\n\nDec 1, 2023\n\n\nShambhavi Kuthe\n\n\n\n\n\n\n  \n\n\n\n\nBlog 5: Anomaly/outlier Detection\n\n\n\n\n\n\n\n\n\n\n\n\nDec 1, 2023\n\n\nShambhavi Kuthe\n\n\n\n\n\n\nNo matching items"
   }
 ]
